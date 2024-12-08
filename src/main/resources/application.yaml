@@ -3,7 +3,22 @@ io:
     resolver:
       dns:
         use-system-resolver: true
+#keycloak:
+#  url: http://localhost:8080/realms/myrealm/protocol/openid-connect/token
+#  client-id: amo-client
+#  client-secret: LM8vaTxgVjUhokBSpu4RSPuunlsho9be
+
+keycloak:
+  realm: amo-realm
+  auth-server-url: http://localhost:8090
+  resource: amo-client
+  credentials:
+    secret: LM8vaTxgVjUhokBSpu4RSPuunlsho9be
+  use-resource-role-mappings: true
+
 spring:
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
       routes:
@@ -15,11 +30,6 @@ spring:
               - PrefixPath=/api
               #- AddRequestHeader=Authorization, Bearer ${token}
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8090/realms/amo-realm
 
   management:
     endpoints:
