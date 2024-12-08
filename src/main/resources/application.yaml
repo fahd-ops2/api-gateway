@@ -1,0 +1,33 @@
+io:
+  netty:
+    resolver:
+      dns:
+        use-system-resolver: true
+spring:
+  cloud:
+    gateway:
+      routes:
+          - id: user_service
+            uri: ${USERS_ROUTE_URI:http://localhost:8081}
+            predicates:
+              - Path=/droits/**
+            filters:
+              - PrefixPath=/api
+              #- AddRequestHeader=Authorization, Bearer ${token}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/amo-realm
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"
+    endpoint:
+      health:
+        show-details: always
+      gateway:
+        enabled: true
