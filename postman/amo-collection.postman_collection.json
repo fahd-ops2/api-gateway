@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "52e055b8-6db2-4661-92f6-084b9e9c24cb",
+		"name": "amo-collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "12709931"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/droits",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Fetching environment variables",
+							"let clientId = pm.environment.get('client_id');",
+							"let clientSecret = pm.environment.get('client_secret');",
+							"let username = pm.environment.get('username');",
+							"let password = pm.environment.get('password');",
+							"let scope = pm.environment.get('scope');",
+							"let grant_type = pm.environment.get('grant_type');",
+							"",
+							"",
+							"// Sending the request",
+							"pm.sendRequest({",
+							"    url: \"http://localhost:8080/auth/token\",",
+							"    method: \"POST\",",
+							"    header: {",
+							"        \"Content-Type\": \"application/json\"",
+							"    },",
+							"    body: {",
+							"        mode: \"raw\",  // Changed from 'urlencoded' to 'raw'",
+							"        raw: JSON.stringify({",
+							"            client_id: clientId,",
+							"            client_secret: clientSecret,",
+							"            username: username,",
+							"            password: password,",
+							"            scope: scope,",
+							"            grant_type: grant_type",
+							"        })",
+							"    }",
+							"}, function (err, res) {",
+							"    // Debugging request error",
+							"    if (err) {",
+							"        console.error(\"Error sending request:\", err);",
+							"    } else {",
+							"",
+							"        try {",
+							"            let jsonData = res.json();",
+							"",
+							"            // Setting the access token",
+							"            if (jsonData.access_token) {",
+							"                pm.environment.set(\"access_token\", jsonData.access_token);",
+							"                console.log(\"Access token set:\", jsonData.access_token);",
+							"            } else {",
+							"                console.error(\"Access token not found in response.\");",
+							"            }",
+							"        } catch (parseError) {",
+							"            console.error(\"Error parsing JSON response:\", parseError);",
+							"        }",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/droits/status"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8090/realms/amo-realm/protocol/openid-connect/token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "amo-client",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "LM8vaTxgVjUhokBSpu4RSPuunlsho9be",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "men",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "men",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "amo-droit",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8090/realms/amo-realm/protocol/openid-connect/token"
+			},
+			"response": []
+		}
+	]
+}
